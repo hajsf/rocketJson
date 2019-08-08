@@ -1,0 +1,97 @@
+<h1>Rocket Form Kitchen Sink</h1>
+
+<form id="myForm" action="/" method="post" accept-charset="utf-8">
+    <label>Checkbox:
+        <input type="checkbox" name="checkbox" value="on">
+    </label><br /><br />
+
+    <label>Number:
+        <input name="number" type="number" value="123" />
+    </label><br /><br />
+
+    <label>Password:
+        <input name="password" type="password" />
+    </label>
+    <br /><br />
+
+    <label for="radio">Type:
+        <label for="a">A
+            <input type="radio" name="radio" id="a" value="a" />
+        </label>
+        <label for="b">B
+            <input type="radio" name="radio" id="b" value="b" checked />
+        </label>
+        <label for="c">C
+            <input type="radio" name="radio" id="c" value="c" />
+        </label>
+    </label>
+    <br /><br />
+
+    <label>Textarea:
+        <textarea name="text_area" rows="10" cols="50">Write something here.</textarea>
+    </label>
+    <br /><br />
+
+    <label>Select:
+        <select name="select">
+            <option value="a">Value A</option>
+            <option value="b" selected>Value B</option>
+            <option value="c">Value C</option>
+        </select>
+    </label>
+    <br /><br />
+
+    <label>Submit:
+        <input type="submit" value="Login">
+    </label>
+    <br /><br />
+
+
+</form>
+
+<button onclick="submit(document.forms['myForm'])">Login</button>
+<button onclick="submit(document.querySelector('#myForm'))">Login</button>
+
+<script>
+const formToJSON = elements => [].reduce.call(elements, (data, element) => {
+  console.log(element);
+  switch (element.type) {
+    case "radio": if(element.checked) data[element.name] = element.value;
+     break;
+    case "checkbox" : data[element.name] = element.checked;
+     break;
+    case "number" : data[element.name] = Number(element.value);
+     break;
+    default: data[element.name] = element.value;
+}
+  return data;
+
+}, {});
+
+
+const handleFormSubmit = event => {
+    event.preventDefault();
+    console.log("hi");
+    const data = formToJSON(form.elements);
+    console.log(data);
+  //  const odata = JSON.stringify(data, null, "  ");
+  const jdata = JSON.stringify(data);
+    console.log(jdata);
+
+    (async () => {
+      const rawResponse = await fetch('/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: jdata
+      });
+      const content = await rawResponse.json();
+
+      console.log(content);
+    })();
+};
+const form = document.forms['myForm'];
+form.addEventListener('submit', handleFormSubmit);
+</script>
